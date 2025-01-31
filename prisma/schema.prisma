@@ -23,3 +23,19 @@ model User {
   update_at DateTime @updatedAt
   @@map("users")
 }
+
+model Book {
+id Int @id @default(autoincrement()) 
+  tittle String
+   isbn Int @unique
+  publisher String
+  published_date DateTime
+  author String
+  category String
+  availabel_copies Int @default(1)
+  total_copies Int
+    created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+@@map("books")
+}
