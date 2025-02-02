@@ -21,11 +21,13 @@ model User {
   password String
   created_at DateTime @default(now())
   update_at DateTime @updatedAt
+
+  members Member[]
   @@map("users")
 }
 
 model Book {
-id Int @id @default(autoincrement()) 
+   id Int @id @default(autoincrement()) 
   tittle String
    isbn Int @unique
   publisher String
@@ -36,6 +38,39 @@ id Int @id @default(autoincrement())
   total_copies Int
     created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  transactions Transaction[]
 
 @@map("books")
+}
+
+model Member {
+  id Int @id @default(autoincrement())
+  name String
+  user_id Int
+  phone String
+  address String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+ 
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+transactions Transaction[]
+  @@map("members")
+}
+enum TransactionType{
+Borrow
+Return
+}
+model Transaction {
+  id Int @id @default(autoincrement())
+  deadline Int
+  member_id Int
+  book_id Int
+  transaction_type TransactionType
+   created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+ member Member @relation(fields: [member_id], references: [id])
+  book Book @relation(fields: [book_id], references: [id])
+
+  @@map("transactions")
 }

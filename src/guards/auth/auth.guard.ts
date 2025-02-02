@@ -13,30 +13,27 @@ import { IS_PUBLIC_KEY } from 'src/helpers/public';
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly reflactor : Reflector,
-    
+    private readonly reflactor: Reflector,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
-      const isPublic= this.reflactor.getAllAndOverride<boolean>(
+      const isPublic = this.reflactor.getAllAndOverride<boolean>(
         IS_PUBLIC_KEY,
         [context.getHandler(), context.getClass()],
       );
 
-      if (isPublic){
+      if (isPublic) {
         return true;
       }
       const request = context.switchToHttp().getRequest();
       const [type, token] = request.headers.authorization?.split(' ') ?? [];
-
-      console.log(token);
 
       if (type !== 'Bearer' || !token) {
         throw new UnauthorizedException();
       }
 
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.SECRETY_KEY,
+        secret: process.env.SECRET_KEY,
       });
       request['payload'] = payload;
     } catch (err) {
